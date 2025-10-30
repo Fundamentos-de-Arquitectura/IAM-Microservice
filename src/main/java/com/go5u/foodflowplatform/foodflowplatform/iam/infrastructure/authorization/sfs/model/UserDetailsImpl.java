@@ -39,4 +39,25 @@ public class UserDetailsImpl implements UserDetails {
         return new UserDetailsImpl(account.getUserName()
                 , account.getPassword(), authorities);
     }
-}
+
+    // Implementaciones explícitas de la interfaz UserDetails
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() { return authorities; }
+
+    @Override
+    public String getPassword() { return password; }
+
+    @Override
+    public String getUsername() { return username; }
+
+    @Override
+    public boolean isAccountNonExpired() { return accountNonExpired; }
+
+    @Override
+    public boolean isAccountNonLocked() { return accountNonLocked; }
+
+    @Override
+    public boolean isCredentialsNonExpired() { return credentialsNonExpired; }
+
+    @Override
+    public boolean isEnabled() { return enabled; }

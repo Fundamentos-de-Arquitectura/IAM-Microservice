@@ -70,4 +70,8 @@ public class Account extends AuditableAbstractAggregateRoot<Account> {
         return Set.of(Roles.ROLE_PATIENT.toString(), Roles.ROLE_PROFESSIONAL.toString());
     }
 
+    // Getters explícitos para evitar dependencia de Lombok
+    public String getUserName() { return userName; }
+    public String getPassword() { return password; }
+    public Roles getRole() { return role; }
 }
