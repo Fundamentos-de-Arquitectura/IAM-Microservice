@@ -6,7 +6,6 @@ import com.go5u.foodflowplatform.foodflowplatform.iam.domain.service.AccountQuer
 import com.go5u.foodflowplatform.foodflowplatform.iam.infrastructure.persistence.jpa.repositories.AccountRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -19,9 +18,6 @@ public class AccountQueryServiceImpl implements AccountQueryService {
 
     @Override
     public Optional<Account> handle(GetAccountByIdQuery query) {
-//        return accountRepository.findById(query.id());
-        var accountFound = accountRepository.findById(query.id());
-        if(accountFound.isEmpty()) throw new IllegalArgumentException("Account not found");
-        return accountFound;
+        return accountRepository.findById(query.id());
     }
 }
