@@ -32,33 +32,28 @@ public class Account extends AuditableAbstractAggregateRoot<Account> {
     private Roles role;
 
     @Embedded
+    @Getter
     private ProfileId profileId;
 
     public Account(SignUpCommand command) {
-        System.out.println("role from command %s".formatted(command.role()));
-        System.out.println("role from enum %s".formatted(Roles.ROLE_PROFESSIONAL.toString()));
-
-        if(Objects.equals(command.role(), Roles.ROLE_PROFESSIONAL.toString())
-                || Objects.equals(command.role(), Roles.ROLE_PATIENT.toString())) {
+        // Ahora sólo se permite el rol ADMIN
+        if (Objects.equals(command.role(), Roles.ADMIN.toString())) {
             this.userName = command.username();
             this.password = command.password();
             this.role = Roles.valueOf(command.role());
         } else {
-            throw new IllegalArgumentException("Invalid role");
+            throw new IllegalArgumentException("Invalid role: only ADMIN is allowed");
         }
     }
 
     public Account(SignUpCommand command, String hashedPassword) {
-        System.out.println("role from command %s".formatted(command.role()));
-        System.out.println("role from enum %s".formatted(Roles.ROLE_PROFESSIONAL.toString()));
-
-        if(Objects.equals(command.role(), Roles.ROLE_PROFESSIONAL.toString())
-                || Objects.equals(command.role(), Roles.ROLE_PATIENT.toString())) {
+        // Ahora sólo se permite el rol ADMIN
+        if (Objects.equals(command.role(), Roles.ADMIN.toString())) {
             this.userName = command.username();
             this.password = hashedPassword;
             this.role = Roles.valueOf(command.role());
         } else {
-            throw new IllegalArgumentException("Invalid role");
+            throw new IllegalArgumentException("Invalid role: only ADMIN is allowed");
         }
     }
 
@@ -67,11 +62,7 @@ public class Account extends AuditableAbstractAggregateRoot<Account> {
     }
 
     public Set<String> getAllRoles() {
-        return Set.of(Roles.ROLE_PATIENT.toString(), Roles.ROLE_PROFESSIONAL.toString());
+        // Devolver únicamente ADMIN
+        return Set.of(Roles.ADMIN.toString());
     }
-
-    // Getters explícitos para evitar dependencia de Lombok
-    public String getUserName() { return userName; }
-    public String getPassword() { return password; }
-    public Roles getRole() { return role; }
 }

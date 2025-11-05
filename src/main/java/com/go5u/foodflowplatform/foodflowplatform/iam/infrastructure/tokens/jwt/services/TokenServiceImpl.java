@@ -6,7 +6,6 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.http.HttpServletRequest;
-import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -47,10 +46,12 @@ public class TokenServiceImpl implements BearerTokenService {
     }
 
     private boolean isTokenPresentIn(String authorizationParameter) {
-        return authorizationParameter.startsWith(BEARER_TOKEN_PREFIX);
+        return authorizationParameter != null && authorizationParameter.startsWith(BEARER_TOKEN_PREFIX);
     }
 
     private String extractTokenFrom(String authorizationParameter) {
+        if (authorizationParameter == null) return null;
+        if (authorizationParameter.length() <= TOKEN_START_INDEX) return null;
         return authorizationParameter.substring(TOKEN_START_INDEX);
     }
 
@@ -60,7 +61,7 @@ public class TokenServiceImpl implements BearerTokenService {
 
     private String buildTokenWithDefaultParameters(String username) {
         var issuedAt = new Date();
-        var expiration = DateUtils.addDays(issuedAt, expirationDays);
+        var expiration = Date.from(issuedAt.toInstant().plus(java.time.Duration.ofDays(expirationDays)));
         var key = getSigningKey();
         return Jwts.builder()
                 .subject(username)
@@ -71,13 +72,14 @@ public class TokenServiceImpl implements BearerTokenService {
     }
 
     private boolean isBearerTokenIn(String authorizationParameter) {
-        return authorizationParameter.startsWith(BEARER_TOKEN_PREFIX);
+        return authorizationParameter != null && authorizationParameter.startsWith(BEARER_TOKEN_PREFIX);
     }
 
 
     @Override
     public String getBearerTokenFrom(HttpServletRequest token) {
         String parameter = getAuthorizationParameterFrom(token);
+        if(parameter == null) return null;
         if(isTokenPresentIn(parameter) && isBearerTokenIn(parameter)) return extractTokenFrom(parameter);
         return null;
     }
@@ -99,6 +101,7 @@ public class TokenServiceImpl implements BearerTokenService {
 
     @Override
     public boolean validateToken(String token) {
+        if (token == null) return false;
         try {
             Jwts.parser().verifyWith(getSigningKey()).build().parseSignedClaims(token);
             LOGGER.info("Token is valida");
