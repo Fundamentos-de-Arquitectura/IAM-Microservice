@@ -35,6 +35,9 @@ public class Account extends AuditableAbstractAggregateRoot<Account> {
     @Getter
     private ProfileId profileId;
 
+    @Getter
+    private Long subscriptionId;
+
     public Account(SignUpCommand command) {
         // Ahora sólo se permite el rol ADMIN
         if (Objects.equals(command.role(), Roles.ADMIN.toString())) {
@@ -64,5 +67,9 @@ public class Account extends AuditableAbstractAggregateRoot<Account> {
     public Set<String> getAllRoles() {
         // Devolver únicamente ADMIN
         return Set.of(Roles.ADMIN.toString());
+    }
+
+    public void setSubscriptionId(Long subscriptionId) {
+        this.subscriptionId = subscriptionId;
     }
 }

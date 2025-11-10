@@ -3,6 +3,7 @@ package com.go5u.foodflowplatform.foodflowplatform.iam.interfaces.rest;
 
 import com.go5u.foodflowplatform.foodflowplatform.iam.domain.model.queries.GetAccountByIdQuery;
 import com.go5u.foodflowplatform.foodflowplatform.iam.domain.service.AccountQueryService;
+import com.go5u.foodflowplatform.foodflowplatform.iam.interfaces.rest.dto.UserResponse;
 import com.go5u.foodflowplatform.foodflowplatform.iam.interfaces.rest.resources.AccountResource;
 import com.go5u.foodflowplatform.foodflowplatform.iam.interfaces.rest.transform.AccountResourceFromEntityAssembler;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -29,5 +30,25 @@ public class AccountsController {
 
         var userResource = AccountResourceFromEntityAssembler.toResourceFromEntity(account.get());
         return ResponseEntity.ok(userResource);
+    }
+
+    /**
+     * Endpoint para obtener usuario como UserResponse (DTO compartido)
+     * Usado por otros microservicios para comunicación entre servicios
+     */
+    @GetMapping("/{accountId}/user-response")
+    public ResponseEntity<UserResponse> getUserResponseById(@PathVariable Long accountId) {
+        var getAccountByIdQuery = new GetAccountByIdQuery(accountId);
+        var account = accountQueryService.handle(getAccountByIdQuery);
+        if(account.isEmpty()) return ResponseEntity.notFound().build();
+
+        var accountEntity = account.get();
+        var userResponse = new UserResponse(
+                accountEntity.getId(),
+                accountEntity.getUserName(),
+                accountEntity.getRoleInString(),
+                accountEntity.getSubscriptionId()
+        );
+        return ResponseEntity.ok(userResponse);
     }
 }

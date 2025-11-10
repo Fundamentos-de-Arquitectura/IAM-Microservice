@@ -6,6 +6,11 @@ import com.go5u.foodflowplatform.foodflowplatform.iam.interfaces.rest.resources.
 
 public class AccountResourceFromEntityAssembler {
     public static AccountResource toResourceFromEntity(Account entity) {
-        return new AccountResource(entity.getId(), entity.getUserName(), entity.getRoleInString());
+        return new AccountResource(
+                entity.getId(), 
+                entity.getUserName(), 
+                entity.getRoleInString(),
+                entity.getSubscriptionId()
+        );
     }
 }
