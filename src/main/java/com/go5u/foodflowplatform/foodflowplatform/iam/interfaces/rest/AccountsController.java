@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "api/v1/accounts")
+@RequestMapping(value = "/api/v1/accounts")
 @Tag(name = "Accounts", description = "Accounts Endpoints")
 public class AccountsController {
     private final AccountQueryService accountQueryService;
